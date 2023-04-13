@@ -18,13 +18,15 @@ const Debits = (props) => {
   // Render the list of Debit items and a form to input new Debit item
   return (
     <div>
-      <h1>Debits</h1>
 
+      <h1>Debits</h1>
+      Balance: {props.accountBalance} 
+      <br/>
       {debitsView()}
 
       <form onSubmit={props.addDebit}>
-        <input type="text" name="description" />
-        <input type="number" name="amount" />
+        <input type="text" name="description" placeholder='description'/>
+        <input type="number" step = "0.01" name="amount" placeholder='amount'/>
         <button type="submit">Add Debit</button>
       </form>
       <br/>
