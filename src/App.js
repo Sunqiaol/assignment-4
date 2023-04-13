@@ -50,7 +50,18 @@ class App extends Component {
       event.target.reset(); // Reset the form fields to their initial state
     };
     
-
+    addDebit = (event) => {
+      event.preventDefault(); // Prevent the page from reloading on submit
+      const debit = this.state.debitList;
+      debit.push({
+        id:this.state.debitList.length + 1,
+        description: event.target.elements.description.value,
+        amount: event.target.elements.amount.value,
+        date: new Date().toLocaleDateString() // Add the current date
+      });
+      this.setState({debitList:debit});
+      event.target.reset(); // Reset the form fields to their initial state
+    };
    
 
   async componentDidMount() {
@@ -70,6 +81,21 @@ class App extends Component {
       }    
     }
 
+    linkToAPI = 'https://johnnylaicode.github.io/api/debits.json';
+    try {  // Accept success response as array of JSON objects (users)
+      let response = await axios.get(linkToAPI);
+      // To get data object in the response, need to use "response.data"
+      this.setState({debitList: response.data});  // Store received data in state's "users" object
+    } 
+    catch (error) {  // Print out errors at console when there is an error response
+      if (error.response) {
+        // The request was made, and the server responded with error message and status code.
+        console.log(error.response.data);  // Print out error message (e.g., Not Found)
+        console.log(error.response.status);  // Print out error status code (e.g., 404)
+      }    
+    }
+
+
   }
 
   // Create Routes and React elements to be rendered using React components
@@ -82,7 +108,7 @@ class App extends Component {
     const LogInComponent = () => (<LogIn user={this.state.currentUser} mockLogIn={this.mockLogIn} />)
     const CreditsComponent = () => (
       <Credits credits={this.state.creditList} accountBalance={this.state.accountBalance}  addCredit = {this.addCredit}/>) 
-    const DebitsComponent = () => (<Debits debits={this.state.debitList}/>) 
+      const DebitsComponent = () => (<Debits debits={this.state.debitList} accountBalance={this.state.accountBalance} addDebit = {this.addDebit}/>) 
 
     // Important: Include the "basename" in Router, which is needed for deploying the React app to GitHub Pages
     return (
