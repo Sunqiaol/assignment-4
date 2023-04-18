@@ -4,7 +4,7 @@ src/App.js
 This is the top-level component of the app.
 It contains the top-level state.
 ==================================================*/
-import React, {Component,  useState} from 'react';
+import React, {Component,} from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import axios from 'axios';
 // Import other components
@@ -18,8 +18,9 @@ class App extends Component {
   constructor() {  // Create and initialize state
     super(); 
     this.state = {
-      accountBalance: 1234567.89,
+      accountBalance: 0,
       creditList: [],
+      creditAmount : 0,
       debitList: [],
       currentUser: {
         userName: 'Joe Smith',
@@ -27,14 +28,14 @@ class App extends Component {
       }
     };
   }
-
+  
+ 
   // Update state's currentUser (userName) after "Log In" button is clicked
   mockLogIn = (logInInfo) => {  
     const newUser = {...this.state.currentUser};
     newUser.userName = logInInfo.userName;
     this.setState({currentUser: newUser})
   }
-
  
 
     addCredit = (event) => {
@@ -47,6 +48,8 @@ class App extends Component {
         date: new Date().toLocaleDateString() // Add the current date
       });
       this.setState({creditList:credit});
+      const Balance = this.state.accountBalance+parseFloat(event.target.elements.amount.value)
+      this.setState({accountBalance:Balance})
       event.target.reset(); // Reset the form fields to their initial state
     };
     
@@ -60,6 +63,8 @@ class App extends Component {
         date: new Date().toLocaleDateString() // Add the current date
       });
       this.setState({debitList:debit});
+      const Balance = this.state.accountBalance-parseFloat(event.target.elements.amount.value)
+      this.setState({accountBalance:Balance})
       event.target.reset(); // Reset the form fields to their initial state
     };
    
@@ -95,9 +100,13 @@ class App extends Component {
       }    
     }
 
-
+    const totalDebits = this.state.debitList.reduce((total,debits) => total + debits.amount,0)
+    const totalcredit = this.state.creditList.reduce((total,credits) => total + credits.amount,0)
+    this.setState({accountBalance:totalcredit-totalDebits})
   }
 
+ 
+ 
   // Create Routes and React elements to be rendered using React components
   render() {  
     // Create React elements and pass input props to components
@@ -107,9 +116,12 @@ class App extends Component {
     )
     const LogInComponent = () => (<LogIn user={this.state.currentUser} mockLogIn={this.mockLogIn} />)
     const CreditsComponent = () => (
-      <Credits credits={this.state.creditList} accountBalance={this.state.accountBalance}  addCredit = {this.addCredit}/>) 
-      const DebitsComponent = () => (<Debits debits={this.state.debitList} accountBalance={this.state.accountBalance} addDebit = {this.addDebit}/>) 
-
+      <Credits credits={this.state.creditList} accountBalance={this.state.accountBalance}  addCredit = {this.addCredit} />) 
+    const DebitsComponent = () => (
+    <Debits debits={this.state.debitList} accountBalance={this.state.accountBalance} addDebit = {this.addDebit} />) 
+    
+      
+  
     // Important: Include the "basename" in Router, which is needed for deploying the React app to GitHub Pages
     return (
       <Router basename="/my-react-app">

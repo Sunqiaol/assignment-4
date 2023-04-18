@@ -11,22 +11,23 @@ import React, { Component } from 'react';
 
 
 const Credits = (props) => {
+  let creditView = () => {
+    const { credits } = props;
+    
+
+    return credits.map((credit) => {  // Extract "id", "amount", "description" and "date" properties of each debits JSON array element
+      let date = credit.date.slice(0,10);
+      return <li key={credit.id}>{credit.amount} {credit.description} {date}</li>
+    });
+  }
   return (
     <div>
       <h1>Credits</h1>
       Balance: {props.accountBalance} 
       <br/>
       CreditList:
-      <div className="container">
-        {
-          props.credits.map((credit) => (
-            <div key={credit.id}>
-              <h3>Name  {credit.id}: {credit.description} Amount:{credit.amount} Date : {credit.date}</h3>
-              <p>------------------------------</p>
-            </div>
-          ))
-        }
-      </div>
+      {creditView()}
+
 
       <form onSubmit={props.addCredit}>
         <input type="text" name="description" placeholder='Description'/>
