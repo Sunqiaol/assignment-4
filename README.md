@@ -1,3 +1,3 @@
 Sunqiaol - Sunqiao lin
 
-https://github.com/Sunqiaol/my-react-app
+https://sunqiaol.github.io/my-react-app/
